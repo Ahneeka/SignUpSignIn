@@ -7,8 +7,6 @@ import java.util.HashMap;
 
 public class UserServicesImpl implements UserServices {
 private final UserRepository userRepository = new UserRepository();
-User user = new User();
-private final HashMap<String, User> userList = new HashMap<>();
 
 
 //    @Override
@@ -32,7 +30,7 @@ private final HashMap<String, User> userList = new HashMap<>();
         user.setFirstName(firstName);
         user.setLastName(lastName);
         user.setPassword(password);
-        if (user.getEmail().equals(email))throw new IllegalArgumentException("email already exist ");
+        if (userRepository.findByEmail(email) != null) throw new IllegalArgumentException("email already exist ");
         else {
             userRepository.saveUser(user);
         }
@@ -40,12 +38,13 @@ private final HashMap<String, User> userList = new HashMap<>();
     }
 
     @Override
-    public User findByEmail(String email) {
-        return userList.get(email);
+    public User login(String email, String password) {
+        return userRepository.findByEmail(email);
     }
 
     @Override
-    public void deleteByEmail(String email) {
-        userList.remove(email);
+    public void deleteUser(String email) {
+        userRepository.deleteByKey(email);
     }
+
 }
